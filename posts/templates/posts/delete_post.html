@@ -1,0 +1,80 @@
+{% extends 'home.html' %}
+{% load static %}
+{% block content %}
+<div class="confirm-delete-container"> <h2>Delete Post</h2>
+    <p>Are you sure you want to delete the post: "{{ post.content }}"?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Confirm Delete</button>
+        <a href="{% url 'posts:feed' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+<style>
+    /* ส่วนที่เพิ่ม/แก้ไขสำหรับ confirm_delete_post.html เท่านั้น */
+
+.confirm-delete-container { /* เพิ่ม class เฉพาะ container */
+    background-color: #222;
+    border: 1px solid #333;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
+    padding: 40px;
+    text-align: center;
+    width: 90%;
+    max-width: 600px;
+    margin: 50px auto; /* จัดให้อยู่กึ่งกลางหน้าจอ */
+}
+
+.confirm-delete-container h2 { /* เพิ่ม class เฉพาะ h2 */
+    color: #ff4500;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 2.5em;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.confirm-delete-container p { /* เพิ่ม class เฉพาะ p */
+    font-size: 1.2em;
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.confirm-delete-container form { /* เพิ่ม class เฉพาะ form */
+    display: flex;
+    justify-content: center;
+}
+
+.confirm-delete-container .btn-danger, /* เพิ่ม class เฉพาะ btn-danger */
+.confirm-delete-container .btn-secondary { /* เพิ่ม class เฉพาะ btn-secondary */
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    margin: 0 10px;
+}
+
+.confirm-delete-container .btn-danger {
+    background-color: #d9534f;
+    color: #fff;
+    box-shadow: 0 4px 8px rgba(217, 83, 79, 0.6);
+}
+
+.confirm-delete-container .btn-danger:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(217, 83, 79, 0.8);
+}
+
+.confirm-delete-container .btn-secondary {
+    background-color: #555;
+    color: #fff;
+    box-shadow: 0 4px 8px rgba(85, 85, 85, 0.6);
+}
+
+.confirm-delete-container .btn-secondary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(85, 85, 85, 0.8);
+}
+</style>
+{% endblock %}

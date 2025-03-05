@@ -1,0 +1,226 @@
+{% extends "home.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="profile-container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="profile-picture text-center mb-4">
+                    {% if user_profile.profile_picture %}
+                        <img src="{{ user_profile.profile_picture.url }}" alt="Profile Picture" class="rounded-circle img-fluid" onerror="this.src='{% static 'images/default_profile.png' %}';">
+                    {% else %}
+                        <img src="{% static 'images/default_profile.png' %}" alt="Default Profile" class="rounded-circle img-fluid">
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="profile-header mb-4">
+                    <h2>{{ user_profile.username }}</h2>
+                </div>
+                <div class="profile-info mb-4">
+                </div>
+                <div class="profile-actions">
+                    {% if user != user_profile %}
+                        {% if is_following %}
+                            <a href="{% url 'users:unfollow_user' user_profile.id %}" class="btn btn-danger btn-sm mr-2">Unfollow</a>
+                        {% else %}
+                            <a href="{% url 'users:follow_user' user_profile.id %}" class="btn btn-primary btn-sm mr-2">Follow</a>
+                        {% endif %}
+                    {% endif %}
+                    {% if user == user_profile %}
+                        <a href="{% url 'users:edit_profile' %}" class="btn btn-secondary btn-sm">Edit Profile</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <hr class="my-4">
+
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="followers-section">
+                    <h3>Followers ({{ followers.count }})</h3>
+                    <ul class="list-unstyled">
+                        {% for follower in followers %}
+                            <li class="d-flex align-items-center mb-2">
+                                {% if follower.profile_picture %}
+                                    <img src="{{ follower.profile_picture.url }}" alt="Profile Picture" class="rounded-circle mr-2" width="30" height="30" onerror="this.src='{% static 'images/default_profile.png' %}';">
+                                {% else %}
+                                    <img src="{% static 'images/default_profile.png' %}" alt="Default Profile" class="rounded-circle mr-2" width="30" height="30">
+                                {% endif %}
+                                <a href="{% url 'users:user_profile' follower.username %}">{{ follower.username }}</a>
+                            </li>
+                        {% empty %}
+                            <p>No followers yet.</p>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="following-section">
+                    <h3>Following ({{ following.count }})</h3>
+                    <ul class="list-unstyled">
+                        {% for followee in following %}
+                            <li class="d-flex align-items-center mb-2">
+                                {% if followee.profile_picture %}
+                                    <img src="{{ followee.profile_picture.url }}" alt="Profile Picture" class="rounded-circle mr-2" width="30" height="30" onerror="this.src='{% static 'images/default_profile.png' %}';">
+                                {% else %}
+                                    <img src="{% static 'images/default_profile.png' %}" alt="Default Profile" class="rounded-circle mr-2" width="30" height="30">
+                                {% endif %}
+                                <a href="{% url 'users:user_profile' followee.username %}">{{ followee.username }}</a>
+                            </li>
+                        {% empty %}
+                            <p>Not following anyone.</p>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* ส่วนที่เพิ่ม/แก้ไขสำหรับ user_profile.html เท่านั้น */
+
+.profile-container {
+    background: linear-gradient(135deg, #1a1a1a, #2c2c2c);
+    color: #e0e0e0;
+    font-family: 'Montserrat', sans-serif;
+    padding: 50px;
+    border-radius: 20px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.9);
+    margin: 30px auto;
+    max-width: 1000px;
+}
+
+.profile-picture img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border: 5px solid #10f7ff;
+    box-shadow: 0 8px 15px rgba(0, 251, 255, 0.7);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile-picture img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0, 255, 255, 0.9);
+}
+
+.profile-header h2 {
+    color: #ff6600;
+    font-size: 3em;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    margin-bottom: 20px;
+}
+
+.profile-actions .btn {
+    padding: 12px 25px;
+    border-radius: 10px;
+    font-size: 1.1em;
+    font-weight: 600;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-right: 10px;
+}
+
+.profile-actions .btn-primary {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: #fff;
+    box-shadow: 0 8px 15px rgba(52, 152, 219, 0.7);
+}
+
+.profile-actions .btn-primary:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(52, 152, 219, 0.9);
+}
+
+.profile-actions .btn-danger {
+    background-color: #d9534f;
+    color: #fff;
+    box-shadow: 0 8px 15px rgba(217, 83, 79, 0.7);
+}
+
+.profile-actions .btn-danger:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(217, 83, 79, 0.9);
+}
+
+.profile-actions .btn-secondary {
+    background-color: #555;
+    color: #fff;
+    box-shadow: 0 8px 15px rgba(85, 85, 85, 0.7);
+}
+
+.profile-actions .btn-secondary:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(85, 85, 85, 0.9);
+}
+
+.followers-section h3,
+.following-section h3 {
+    color: #ff6600;
+    font-size: 2em;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.followers-section ul,
+.following-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.followers-section li,
+.following-section li {
+    background-color: #222;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.8);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.followers-section li:hover,
+.following-section li:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.9);
+}
+
+.followers-section img,
+.following-section img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+.followers-section a,
+.following-section a {
+    color: #3498db;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.followers-section a:hover,
+.following-section a:hover {
+    color: #5dade2;
+}
+
+.followers-section p,
+.following-section p {
+    font-style: italic;
+    color: #ccc;
+}
+
+hr.my-4 {
+    border-top: 2px solid #333;
+}
+</style>
+{% endblock %}

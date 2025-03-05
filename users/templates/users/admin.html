@@ -1,0 +1,164 @@
+{% extends "home.html" %}
+{% load static %}
+
+{% block content %}
+<div class="admin-panel-container">
+    <div class="container mt-4">
+        <h2>Admin Panel</h2>
+        <p>Welcome, Admin!</p>
+
+        <h3>Manage Users</h3>
+        <ul class="user-list">
+            {% for user in users %}
+            <li class="user-item">
+                <div class="user-info">
+                    <span class="user-id">ID: {{ user.id }}</span>
+                    <a href="{% url 'users:user_profile' user.username %}" class="user-username">{{ user.username }}</a>
+                    <span class="user-email">Email: {{ user.email }}</span>
+                </div>
+                <div class="user-actions">
+                    <a href="{% url 'users:delete_user' user.id %}" class="btn btn-danger">Delete</a>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+
+        <h3>Manage Posts</h3>
+        <ul class="admin-links">
+            <li><a href="{% url 'posts:manage_posts' %}">Manage Posts</a></li>
+        </ul>
+    </div>
+</div>
+
+<style>
+   /* ส่วนที่เพิ่ม/แก้ไขสำหรับ admin_panel.html เท่านั้น */
+
+.admin-panel-container {
+    background: linear-gradient(135deg, #1a1a1a, #2c2c2c);
+    color: #e0e0e0;
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.admin-panel-container .container.mt-4 {
+    width: 70%; /* ลดขนาด container */
+    max-width: 700px; /* ลด max-width */
+    margin: 20px auto; /* ลด margin */
+}
+
+.admin-panel-container h2 {
+    color: #ff6600;
+    text-align: center;
+    margin-bottom: 30px; /* ลด margin-bottom */
+    font-size: 2.5em; /* ลดขนาด font */
+    text-transform: uppercase;
+    letter-spacing: 1px; /* ลด letter-spacing */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8); /* ลดขนาดเงา */
+}
+
+.admin-panel-container p {
+    text-align: center;
+    font-size: 1em; /* ลดขนาด font */
+    margin-bottom: 20px; /* ลด margin-bottom */
+}
+
+.admin-panel-container h3 {
+    color: #fff;
+    font-size: 2em; /* ลดขนาด font */
+    margin-bottom: 20px; /* ลด margin-bottom */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.admin-panel-container .user-list,
+.admin-panel-container .admin-links {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 30px; /* ลด margin-bottom */
+}
+
+.admin-panel-container .user-item {
+    background-color: #222;
+    border: 1px solid #333;
+    border-radius: 12px; /* ลดขนาด radius */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.7); /* ลดขนาดเงา */
+    padding: 25px; /* ลด padding */
+    margin-bottom: 20px; /* ลด margin-bottom */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-panel-container .user-item:hover {
+    transform: translateY(-6px); /* ลดขนาด translateY */
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.8); /* ลดขนาดเงา */
+}
+
+.admin-panel-container .user-info {
+    flex-grow: 1;
+}
+
+.admin-panel-container .user-id,
+.admin-panel-container .user-email {
+    display: block;
+    margin-bottom: 6px; /* ลด margin-bottom */
+    font-size: 0.9em; /* ลดขนาด font */
+    color: #ccc;
+}
+
+.admin-panel-container .user-username {
+    font-size: 1.1em; /* ลดขนาด font */
+    color: #3498db;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.admin-panel-container .user-username:hover {
+    color: #5dade2;
+}
+
+.admin-panel-container .user-actions .btn-danger {
+    background-color: #d9534f;
+    color: #fff;
+    padding: 12px 25px; /* ลด padding */
+    border: none;
+    border-radius: 8px; /* ลดขนาด radius */
+    font-size: 1em; /* ลดขนาด font */
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 5px 10px rgba(217, 83, 79, 0.5); /* ลดขนาดเงา */
+}
+
+.admin-panel-container .user-actions .btn-danger:hover {
+    transform: translateY(-4px); /* ลดขนาด translateY */
+    box-shadow: 0 6px 12px rgba(217, 83, 79, 0.7); /* ลดขนาดเงา */
+}
+
+.admin-panel-container .admin-links li a {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: #fff;
+    display: block;
+    padding: 18px 30px; /* ลด padding */
+    border-radius: 10px; /* ลดขนาด radius */
+    text-decoration: none;
+    font-size: 1.1em; /* ลดขนาด font */
+    font-weight: 600;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    text-align: center;
+    box-shadow: 0 5px 10px rgba(52, 152, 219, 0.5); /* ลดขนาดเงา */
+}
+
+.admin-panel-container .admin-links li a:hover {
+    transform: translateY(-5px); /* ลดขนาด translateY */
+    box-shadow: 0 6px 12px rgba(52, 152, 219, 0.7); /* ลดขนาดเงา */
+}
+</style>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'home.html' %}
+
+{% block title %}Post Detail{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    {% if item_data.type == 'post' %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">{{ item.user.username }}</h5>
+                <p class="card-text">Content: {{ item.content }}</p>
+
+                {% if item.image %}
+                    <img src="{{ item.image.url }}" class="card-img-top img-fluid" alt="Post Image">
+                {% endif %}
+
+                <p class="card-text"><small class="text-muted">Created at: {{ item.created_at }}</small></p>
+
+                <div class="d-flex justify-content-start">
+                    <!-- Add other actions (like, comment, share, edit, delete) here -->
+                </div>
+                
+                {% for comment in item.comments.all %}
+                    <div class="card mt-2">
+                        <div class="card-body">
+                            <p><b>{{ comment.user.username }}:</b> {{ comment.text }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% elif item_data.type == 'share' %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">{{ item.user.username }}</h5>
+                <p class="card-text">Share Content: {{ item.content }}</p>
+                <p class="card-text"><small class="text-muted">Shared at: {{ item.created_at }}</small></p>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

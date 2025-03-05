@@ -1,0 +1,352 @@
+{% extends "home.html" %}
+{% load static %}
+{% load tz %}
+
+{% block title %}Feed{% endblock %}
+
+{% block content %}
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<div class="container mt-4" id="feed-container">
+    <h2>Social Feed</h2>
+    <a href="{% url 'posts:create_post' %}" class="btn btn-primary mb-3 ">Create Post</a>
+
+    {% for item_data in items %}
+        {% with item=item_data.item type=item_data.type %}
+            <div class="card mb-3" data-post-id="{{ item.id }}" data-type="{{ type }}">
+                <div class="card-body">
+                    <h5 class="card-title d-flex align-items-center">
+                        {% if item.user.profile_picture %}
+                            <img src="{{ item.user.profile_picture.url }}" alt="Profile Picture" class="rounded-circle mr-2" width="30" height="30" onerror="this.src='{% static 'images/default_profile.png' %}';">
+                        {% else %}
+                            <img src="{% static 'images/default_profile.png' %}" alt="Default Profile" class="rounded-circle mr-2" width="30" height="30">
+                        {% endif %}
+                        {% if type == 'post' %}
+                            {{ item.user.username }}
+                        {% elif type == 'share' %}
+                            {{ item.user.username }}
+                        {% endif %}
+                    </h5>
+
+                    {% if type == 'post' %}
+                        <p class="card-text">{{ item.content }}</p>
+                    {% elif type == 'share' %}
+                        <p class="card-text">{{ item.content }}</p>
+                        <p class="card-text">{{ item.post.content }}</p>
+                    {% endif %}
+
+                    {% if item.image %}
+                        <div class="post-image-container">
+                            <img src="{{ item.image.url }}" class="card-img-top img-fluid post-image" alt="Post Image">
+                        </div>
+                    {% endif %}
+
+                    <p class="card-text">
+                        <small class="text-muted">
+                            {% timezone 'Asia/Bangkok' %}
+                            {% if type == 'post' %}
+                                โพสต์เมื่อ : {{ item.created_at|date:"F d, Y, g:i a" }}
+                            {% elif type == 'share' %}
+                                แชร์เมื่อ : {{ item.created_at|date:"F d, Y, g:i a" }}
+                            {% endif %}
+                            {% endtimezone %}
+                        </small>
+                    </p>
+
+                    <div class="d-flex justify-content-start">
+                        <a href="#" class="btn btn-link like-button" data-post-id="{{ item.id }}">
+                            {% if request.user in item.liked_by.all %}
+                                <i class="fa-solid fa-heart" style="color: #ff0000;"></i>
+                            {% else %}
+                                <i class="fa-regular fa-heart"></i>
+                            {% endif %}
+                            <span id="like-count-{{ item.id }}">{{ item.liked_by.count }}</span>
+                        </a>
+
+                        <span class="ms-2">
+                            <i class="fa-solid fa-share"></i>
+                            {% if type == 'post' %}
+                                <span id="share-count-{{ item.id }}">{{ item.share_count }}</span>
+                            {% elif type == 'share' %}
+                                <span id="share-count-{{ item.post.id }}">{{ item.post.share_count }}</span>
+                            {% endif %}
+                        </span>
+
+                        <a href="#" class="btn btn-link ms-2 comment-button" data-bs-toggle="collapse" data-bs-target="#comments-{{ item.id }}">
+                            <i class="fa-solid fa-comment"></i>
+                        </a>
+
+                        {% if type == 'post' %}
+                            <a href="{% url 'posts:share_post' item.id %}" class="btn btn-link ms-2 share-button" data-post-id="{{ item.id }}">
+                                <i class="fa-solid fa-share"></i>
+                            </a>
+                        {% endif %}
+
+                        {% if request.user == item.user or type == 'share' and request.user == item.user %}
+                            {% if type == 'post' %}
+                                <a href="{% url 'posts:edit_post' item.id %}" class="btn btn-link ms-2"><i class="fa-solid fa-pen-to-square"></i></a>
+                                <a href="{% url 'posts:confirm_delete_post' item.id %}" class="btn btn-link"><i class="fa-solid fa-trash"></i></a>
+                            {% elif type == 'share' %}
+                                <a href="{% url 'posts:confirm_delete_post' item.id %}" class="btn btn-link"><i class="fa-solid fa-trash"></i></a>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+
+                    <div class="collapse" id="comments-{{ item.id }}">
+                        <div class="card card-body">
+                            <div id="comments-list-{{ item.id }}">
+                                {% for comment in item.comments.all %}
+                                    <p id="comment-{{ comment.id }}"><b>{{ comment.user.username }}:</b> {{ comment.text }}</p>
+                                {% endfor %}
+                            </div>
+
+                            <form class="comment-form" data-post-id="{{ item.id }}" action="{% url 'posts:add_comment' item.id %}" method="post">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <input type="text" name="text" class="form-control" placeholder="Write a comment..." autocomplete="off">
+                                </div>
+                                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endwith %}
+    {% endfor %}
+</div>
+
+
+<style>
+
+/* ส่วนที่เพิ่ม/แก้ไขสำหรับ feed.html เท่านั้น */
+
+#feed-container {
+    background: linear-gradient(135deg, #1a1a1a, #2c2c2c);
+    color: #e0e0e0;
+    font-family: 'Roboto', sans-serif;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.8);
+    margin: 30px auto;
+    max-width: 800px;
+}
+
+#feed-container h2 {
+    color: #9abaf3;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2.8em;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 4px rgba(0, 221, 255, 0.8);
+}
+
+#feed-container .btn-primary {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: #fff;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 10px;
+    font-size: 1.1em;
+    font-weight: 600;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 8px 15px rgba(52, 152, 219, 0.7);
+}
+
+#feed-container .btn-primary:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(52, 152, 219, 0.9);
+}
+
+#feed-container .card {
+    background-color: #f0f0f0; /* เปลี่ยนพื้นหลังโพสต์เป็นสีอ่อน */
+    border: 1px solid #ddd; /* เปลี่ยนสีเส้นขอบ */
+    border-radius: 12px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); /* ลดความเข้มเงา */
+    margin-bottom: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#feed-container .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3); /* ลดความเข้มเงา */
+}
+
+#feed-container .card-body {
+    padding: 25px;
+}
+
+#feed-container .card-title {
+    color: #333; /* เปลี่ยนสี title เป็นสีเข้ม */
+    font-size: 1.5em;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+
+#feed-container .card-title img {
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+#feed-container .card-text {
+    font-size: 1.1em;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    color: #444; /* เปลี่ยนสี text เป็นสีเข้ม */
+}
+
+#feed-container .post-image-container {
+    margin-bottom: 15px;
+    max-height: 400px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+}
+
+#feed-container .post-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.7);
+    object-fit: contain;
+}
+
+#feed-container .text-muted {
+    font-size: 0.9em;
+    color: #777; /* เปลี่ยนสี text-muted เป็นสีเข้ม */
+}
+
+#feed-container .btn-link {
+    color: #3498db;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+#feed-container .btn-link:hover {
+    color: #5dade2;
+}
+
+#feed-container .like-button i {
+    color: #ff0000;
+    margin-right: 5px;
+}
+
+#feed-container .comment-form {
+    margin-top: 15px;
+}
+
+#feed-container .comment-form input[type="text"] {
+    background-color: #e8e8e8; /* เปลี่ยนพื้นหลัง input เป็นสีอ่อน */
+    color: #333; /* เปลี่ยนสีข้อความ input เป็นสีเข้ม */
+    border: 1px solid #ccc; /* เปลี่ยนสีเส้นขอบ input */
+    border-radius: 8px;
+    padding: 10px;
+    width: 100%;
+}
+
+#feed-container .comment-form button {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-left: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+#feed-container .comment-form button:hover {
+    background: linear-gradient(135deg, #2980b9, #3498db);
+}
+
+</style>
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+            const cookies = document.cookie.split(";");
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.startsWith(name + "=")) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    $(".like-button").click(function(event) {
+    event.preventDefault();
+    let postId = $(this).data("post-id");
+    let likeCountSpan = $(`#like-count-${postId}`);
+    let heartIcon = $(this).find("i");
+
+    fetch(`/posts/${postId}/like/`, {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": getCookie("csrftoken"),
+            "X-Requested-With": "XMLHttpRequest"
+        },
+        credentials: "include"
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            likeCountSpan.text(data.likes);
+            if (data.liked) {
+                heartIcon.removeClass("fa-regular").addClass("fa-solid").css("color", "#ff0000");
+            } else {
+                heartIcon.removeClass("fa-solid").addClass("fa-regular").css("color", "");
+            }
+        }
+    })
+    .catch(error => console.error("Error:", error));
+});
+
+$(".comment-form").submit(function(event) {
+    event.preventDefault();
+    const form = $(this);
+    const postId = form.data("post-id");
+    const url = form.attr("action");
+    const text = form.find('input[name="text"]').val();
+
+    fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-CSRFToken": getCookie("csrftoken"),
+            "X-Requested-With": "XMLHttpRequest",
+        },
+        body: `text=${encodeURIComponent(text)}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const comment = data.comment;
+            const commentList = $(`#comments-list-${postId}`);
+            commentList.append(`
+                <p id="comment-${comment.id}">
+                    <b>${comment.user}:</b> ${comment.text}
+                </p>
+            `);
+            form.find('input[name="text"]').val(""); // Clear input
+        }
+    })
+    .catch(error => console.error("Error:", error));
+});
+});
+</script>
+{% endblock %}

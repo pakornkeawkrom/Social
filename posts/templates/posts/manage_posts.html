@@ -1,0 +1,133 @@
+{% extends "home.html" %}
+
+{% block title %}Manage Posts{% endblock %}
+
+{% block content %}
+<div class="container mt-4 manage-posts-container">
+    <h2>Manage Posts</h2>
+    <ul class="post-list">
+        {% for item in items %}
+        <li class="post-item">
+            <div class="post-user">{{ item.user.username }}</div>
+            <div class="post-type">
+                {% if item.type == 'post' %}
+                    Post
+                {% elif item.type == 'share' %}
+                    Shared Post
+                {% endif %}
+            </div>
+            <div class="post-original">
+                {% if item.type == 'share' %}
+                    {{ item.post.user.username }} (Original)
+                {% else %}
+                    -
+                {% endif %}
+            </div>
+            <div class="post-content">
+                {% if item.type == 'share' %}
+                    <b>Shared:</b> {{ item.content }} <br>
+                    <b>Original:</b> {{ item.post.content }}
+                {% else %}
+                    {{ item.content }}
+                {% endif %}
+            </div>
+            <div class="post-image">
+                {% if item.image %}
+                    <img src="{{ item.image.url }}" alt="Post Image">
+                {% elif item.type == 'share' and item.post.image %}
+                    <img src="{{ item.post.image.url }}" alt="Original Post Image">
+                {% endif %}
+            </div>
+            <div class="post-created">{{ item.created_at }}</div>
+            <div class="post-actions">
+                <a href="{% url 'posts:delete_post_admin' item.id %}" class="btn-danger">Delete</a>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+
+<style>
+    /* ส่วนที่เพิ่ม/แก้ไขสำหรับ manage_posts.html เท่านั้น */
+
+.manage-posts-container {
+    background-color: #222;
+    border: 1px solid #333;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8);
+    padding: 50px;
+    margin-top: 30px;
+    color: #e0e0e0;
+}
+
+.manage-posts-container h2 {
+    color: #ff4500;
+    font-size: 2.8em;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    text-align: center;
+}
+
+.manage-posts-container .post-list {
+    list-style: none;
+    padding: 0;
+}
+
+.manage-posts-container .post-item {
+    background-color: #333;
+    border-radius: 10px;
+    padding: 25px;
+    margin-bottom: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 2fr 1fr 1fr 1fr; /* ปรับ layout เป็น grid */
+    align-items: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.manage-posts-container .post-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.9);
+}
+
+.manage-posts-container .post-user,
+.manage-posts-container .post-type,
+.manage-posts-container .post-original,
+.manage-posts-container .post-created {
+    font-size: 1em;
+    color: #ccc;
+    text-align: center;
+}
+
+.manage-posts-container .post-content {
+    font-size: 1.1em;
+    line-height: 1.6;
+}
+
+.manage-posts-container .post-image img {
+    max-width: 100px;
+    max-height: 100px;
+    border-radius: 5px;
+    object-fit: cover;
+    display: block;
+    margin: 0 auto;
+}
+
+.manage-posts-container .post-actions .btn-danger {
+    background-color: #d9534f;
+    color: #fff;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.manage-posts-container .post-actions .btn-danger:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(217, 83, 79, 0.8);
+}
+</style>
+{% endblock %}

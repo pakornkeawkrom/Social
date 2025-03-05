@@ -1,0 +1,15 @@
+{% extends "home.html" %}
+{% load static %}
+
+{% block content %}
+    <h2>Profile of {{ user.username }}</h2>
+
+    {% if user.profile_picture %}
+        <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="rounded-circle" width="150" height="150">
+    {% else %}
+        <img src="{% static 'images/default_profile.png' %}" alt="Default Profile" class="rounded-circle" width="150" height="150">
+    {% endif %}
+
+    <p>Email: {{ user.email }}</p>
+    <a href="{% url 'profile' %}">Back to my profile</a>
+{% endblock %}

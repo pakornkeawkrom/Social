@@ -1,0 +1,117 @@
+{% extends "home.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">ผลลัพธ์การค้นหา "{{ query }}"</h2>
+
+    <div class="card">
+        <div class="card-body">
+            {% if users %}
+                <ul class="list-unstyled">
+                    {% for user in users %}
+                        <li class="mb-2">
+                            <a href="{% url 'users:user_profile' user.username %}" class="d-flex align-items-center">
+                                {% if user.profile_picture %}
+                                    <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="rounded-circle mr-2" width="30" height="30" onerror="this.src='{% static 'images/default_profile.png' %}';">
+                                {% else %}
+                                    <img src="{% static 'images/default_profile.png' %}" alt="Default Profile" class="rounded-circle mr-2" width="30" height="30">
+                                {% endif %}
+                                {{ user.username }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>ไม่พบผู้ใช้ที่ตรงกับ "{{ query }}"</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<style>
+    /* ส่วนที่เพิ่ม/แก้ไขสำหรับ search_results.html เท่านั้น */
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap'); /* เพิ่มการนำเข้าฟอนต์ Montserrat */
+
+.container.mt-5 {
+    background: linear-gradient(135deg, #1a1a1a, #2c2c2c);
+    color: #e0e0e0;
+    font-family: 'Montserrat', sans-serif; /* เปลี่ยนฟอนต์เป็น Montserrat */
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.8);
+    margin: 30px auto;
+    max-width: 800px;
+}
+
+.container.mt-5 h2 {
+    color: #03f30b;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2.5em;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 4px rgba(76, 250, 1, 0.8);
+    font-weight: 600; /* เพิ่มความหนาฟอนต์ */
+}
+
+.container.mt-5 .card {
+    background-color: #222;
+    border: 1px solid #333;
+    border-radius: 12px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.8);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.container.mt-5 .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.9);
+}
+
+.container.mt-5 .card-body {
+    padding: 25px;
+}
+
+.container.mt-5 ul {
+    list-style: none;
+    padding: 0;
+}
+
+.container.mt-5 li {
+    background-color: #333;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.container.mt-5 li:hover {
+    background-color: #444;
+}
+
+.container.mt-5 a {
+    color: #3498db;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    transition: color 0.3s ease;
+}
+
+.container.mt-5 a:hover {
+    color: #5dade2;
+}
+
+.container.mt-5 img {
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.container.mt-5 p {
+    color: #ccc;
+    font-style: italic;
+}
+</style>
+{% endblock %}

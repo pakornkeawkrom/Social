@@ -1,0 +1,158 @@
+{% extends 'home.html' %}
+{% load static %}
+{% block content %}
+<div class="create-post-container">
+    <div class="container mt-5">
+        <h2 class="mb-4">New Posts</h2>
+
+        <div class="card">
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary">โพสต์</button>
+                    <a href="{% url 'posts:feed' %}" class="btn btn-secondary">ยกเลิก</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* ส่วนที่เพิ่ม/แก้ไขสำหรับ create_post.html เท่านั้น */
+
+.create-post-container {
+    background: linear-gradient(135deg, #1a1a1a, #2c2c2c); /* เปลี่ยนพื้นหลังเป็น gradient */
+    color: #e0e0e0;
+    font-family: 'Montserrat', sans-serif; /* เปลี่ยน font-family */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 1vh;
+}
+
+.create-post-container .container.mt-5 {
+    width: 90%;
+    max-width: 800px;
+    margin: 50px auto;
+}
+
+.create-post-container .card {
+    background: linear-gradient(135deg, #222, #333); /* เปลี่ยนพื้นหลัง card เป็น gradient */
+    border: none;
+    border-radius: 20px; /* ปรับ radius ให้โค้งมนมากขึ้น */
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.9); /* เพิ่มเงาให้เข้มขึ้น */
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.create-post-container .card:hover {
+    transform: translateY(-8px); /* ยก card ขึ้นเล็กน้อยเมื่อ hover */
+    box-shadow: 0 18px 35px rgba(0, 0, 0, 1); /* เพิ่มเงาเมื่อ hover */
+}
+
+.create-post-container .card-body {
+    padding: 50px; /* เพิ่ม padding */
+}
+
+.create-post-container h2.mb-4 {
+    color: #98f982; /* เปลี่ยนสีหัวข้อให้ดูเด่นขึ้น */
+    text-align: center;
+    margin-bottom: 40px; /* เพิ่ม margin-bottom */
+    font-size: 3em; /* เพิ่มขนาด font */
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    text-shadow: 3px 3px 6px rgba(99, 255, 2, 0.9);
+    position: relative;
+    display: inline-block;
+}
+
+.create-post-container h2.mb-4::before,
+.create-post-container h2.mb-4::after {
+    content: '';
+    position: unset;
+    width: 50px;
+    height: 3px;
+    background-color: #ff6600;
+    bottom: -10px;
+}
+
+.create-post-container h2.mb-4::before {
+    left: -60px;
+}
+
+.create-post-container h2.mb-4::after {
+    right: -60px;
+}
+
+.create-post-container form p {
+    margin-bottom: 30px;
+}
+
+.create-post-container form label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600;
+    font-size: 1.2em;
+    color: #f0f0f0;
+}
+
+.create-post-container form input[type="text"],
+.create-post-container form input[type="file"],
+.create-post-container form textarea {
+    width: 100%;
+    padding: 20px;
+    border: 1px solid #555;
+    border-radius: 10px;
+    background-color: #444;
+    color: #e0e0e0;
+    font-size: 1.1em;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.create-post-container form input[type="text"]:focus,
+.create-post-container form input[type="file"]:focus,
+.create-post-container form textarea:focus {
+    border-color: #ff6600;
+    box-shadow: 0 0 10px rgba(255, 102, 0, 0.7);
+}
+
+.create-post-container form textarea {
+    resize: vertical;
+}
+
+.create-post-container .btn-primary,
+.create-post-container .btn-secondary {
+    padding: 18px 35px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.2em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-right: 20px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.6);
+}
+
+.create-post-container .btn-primary {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: #fff;
+}
+
+.create-post-container .btn-primary:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 20px rgba(52, 152, 219, 0.8);
+}
+
+.create-post-container .btn-secondary {
+    background: linear-gradient(135deg, #555, #444);
+    color: #fff;
+}
+
+.create-post-container .btn-secondary:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 20px rgba(85, 85, 85, 0.8);
+}
+</style>
+{% endblock %}

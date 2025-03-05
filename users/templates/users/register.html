@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fa-solid fa-comments"></i> Social Website
+            </a>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="register-card">
+            <h2 class="text-center">Register</h2>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" name="username" id="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" name="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password" required>
+                </div>
+                <button type="submit" class="btn-primary">Register</button>
+                <p class="login-link">Already have an account? <a href="{% url 'users:login' %}">Login here</a></p>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+<style>
+    body {
+    background-color: #121212;
+    color: #e0e0e0;
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar {
+    background-color: #000;
+    padding: 15px 0;
+    border-bottom: 1px solid #111;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.7);
+}
+
+.navbar .container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+}
+
+.navbar-brand {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.8em; /* ปรับขนาด font ให้เท่ากับ Home */
+    font-weight: 700; /* ปรับ font-weight ให้เท่ากับ Home */
+    letter-spacing: 1px; /* ปรับ letter-spacing ให้เท่ากับ Home */
+    display: flex; /* เพิ่ม flex เพื่อจัดตำแหน่งไอคอน */
+    align-items: center; /* จัดตำแหน่งไอคอนให้อยู่ตรงกลาง */
+}
+
+.navbar-brand i {
+    margin-right: 8px; /* เพิ่มระยะห่างระหว่างไอคอนกับข้อความ */
+}
+
+.container.mt-5 {
+    width: 90%;
+    max-width: 400px;
+    margin: 50px auto;
+}
+
+/* ... CSS อื่นๆ ที่เหลือ ... */
+
+.register-card {
+    background-color: #222;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.text-center {
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #444;
+    border-radius: 5px;
+    background-color: #333;
+    color: #e0e0e0;
+}
+
+.btn-primary {
+    background-color: #3498db;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+}
+
+.login-link {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.login-link a {
+    color: #3498db;
+}
+</style>
